@@ -54,6 +54,7 @@ public class LocalJobManager implements JobManager {
 	protected static String NAMENODE = "ip-10-244-163-80";
 	public static final String JOB_NOT_FOUND = "Job Not Found";
 
+	//Comment
 	public LocalJobManager() {
 	}
 	
