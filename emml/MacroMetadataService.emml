@@ -1,0 +1,49 @@
+<mashup name="MacroMetadataService"
+  xmlns="http://www.jackbe.com/2008-03-01/EMMLSchema"
+  xmlns:macro="http://www.jackbe.com/2008-03-01/EMMLSchema"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.jackbe.com/2008-03-01/EMMLSchema ../src/schemas/EMMLSpec.xsd">
+  <operation name="Invoke">
+    <output name="result" type="document">
+      <EMMLMacros xmlns="http://www.jackbe.com/2008-03-01/EMMLSchema"/>
+    </output>
+    <variables>
+      <variable name="macros" type="document"/>
+      <variable name="includedMacros" type="string"/>
+    </variables>
+    <script type="text/javascript"><![CDATA[
+			var jemsDesigner = new Packages.com.jackbe.jbp.jems.moe.runtime.JEMSDesignerImpl();
+			var domainNames = jemsDesigner.getAllDomainNamespaces().iterator();
+			var macrostr = "<macros>";
+			while(domainNames.hasNext()){			    
+				var domainName = domainNames.next();
+				var macroNameList =jemsDesigner.getAllMacroNames(domainName); 
+				var macroNames = macroNameList.iterator();
+				macrostr = macrostr+'<domain name="'+domainName+'">';
+				while(macroNames.hasNext()){
+					var macroName = macroNames.next();
+					var macroContent = jemsDesigner.getMacro(domainName,macroName);
+					macrostr = macrostr+macroContent;
+				}
+				macrostr = macrostr+"</domain>";
+			}
+			macrostr = macrostr+"</macros>";
+			var reader = new  Packages.java.io.StringReader(macrostr);
+			var source = new  Packages.org.xml.sax.InputSource(reader);
+			macros = Packages.org.oma.emml.me.commons.DOMUtils.parse(source);
+
+        ]]></script>
+    <foreach items="$macros//*:domain" variable="domain">
+      <foreach items="$domain//*:macro" variable="macro">
+        <appendresult outputvariable="result">
+          <EMMLMacro domain="{$domain/@name}" name="{$macro/@name}" xmlns="http://www.jackbe.com/2008-03-01/EMMLSchema">
+	                   {$macro//*:input}
+	                   {$macro//*:output}
+	                   {$macro//*:presto-meta}
+	                   {$macro//*:user-meta}
+                       {$macro//*:macro-meta}
+	            </EMMLMacro>
+        </appendresult>
+      </foreach>
+    </foreach>
+  </operation>
+</mashup>

@@ -1,0 +1,47 @@
+<macro domain="global" name="GetXPath" xmlns="http://www.openmashup.org/schemas/v1.0/EMML" xmlns:fn="java:org.oma.emml.utils.EMMLFunctions" xmlns:macro="http://www.openmashup.org/schemas/v1.0/EMMLMacro" xmlns:presto="http://www.jackbe.com/v1.0/EMMLPrestoExtensions" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openmashup.org/schemas/v1.0/EMML/../schemas/EMMLPrestoSpec.xsd">
+
+  <output name="result" type="string"/>
+  
+  <input name="doc" type="document"/>
+  <input name="xpathstr" type="string"/>
+  
+  <presto:macro-meta>
+    <block> 
+      <label>Get XPath</label>
+      <help>Get XPath</help>
+      <icon url="/prestohub/images/wires/sidebar/actions/sort.png" usage="menu"/>
+      <icon url="/prestohub/images/wires/blocks/gsm/_sort.png" usage="canvas"/>
+    </block>     
+    
+    <parameters>
+      
+      <parameter name="doc">
+        <help>Input Document</help>
+        <label>Input Document</label>
+        <required>true</required>
+        <type datatype="document">
+        </type>
+        <uiconfig>
+          <![CDATA[{"boxMaxWidth":"200","anchor":"60%"}]]>
+        </uiconfig>
+      </parameter>
+      
+      <parameter name="xpathstr">
+        <help>Pick XPath</help>
+        <label>Pick XPath</label>
+        <required>true</required>
+        <type datatype="xpath">
+          <xpath limitTo="doc" usage="path" />
+        </type>
+        <uiconfig>
+          <![CDATA[{"boxMaxWidth":"200","anchor":"60%"}]]>
+        </uiconfig>
+      </parameter>
+    </parameters>
+    
+  </presto:macro-meta>
+  
+  
+  <assign fromvariable="xpathstr" output="result1" outputvariable="result"/>
+  
+</macro>

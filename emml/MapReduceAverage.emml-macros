@@ -1,0 +1,70 @@
+<macros xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.openmashup.org/schemas/v1.0/EMML/../schemas/EMMLPrestoSpec.xsd"
+	xmlns="http://www.openmashup.org/schemas/v1.0/EMML" xmlns:presto="http://www.jackbe.com/v1.0/EMMLPrestoExtensions">
+
+	<macro name="MapReduceAverage" xmlns="http://www.openmashup.org/schemas/v1.0/EMML"
+		xmlns:presto="http://www.jackbe.com/v1.0/EMMLPrestoExtensions"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+		<output name="result" type="document" />
+		<input name="nodeName" type="string" default="price" />
+
+		<script application="" inputvariables="" outputvariable="result"
+			src="" type="groovy">
+   
+    		<![CDATA[
+      			import org.apache.hadoop.io.FloatWritable;
+      			import org.apache.hadoop.io.IntWritable;
+      			import org.apache.hadoop.io.Text;
+      			import org.apache.hadoop.mapreduce.Reducer;
+      			import groovy.util.XmlSlurper;
+     
+				int counter = 0;
+				float sum = 0.0;
+				float average = 0.0;
+				float max = 0.0;
+				float min = Float.MAX_VALUE;
+				XmlSlurper parser = new XmlSlurper();
+				String key = "NAN";
+
+				Iterator<org.apache.hadoop.io.Text> iterator = com.jackbe.mapreduce.EMMLReducer.getIterator();
+      
+				while( iterator.hasNext() ) {
+					String xml = ((org.apache.hadoop.io.Text)iterator.next()).toString();
+
+					if(xml != null) {
+						def record = parser.parseText(xml);
+						String rec = record.price[0].text();
+						float value = Float.parseFloat(rec);
+						sum += value; 
+						if(value < min)
+							min = value;
+						if(value > max)
+							max = value;
+						counter++;
+						key = record.MapReduceKey[0];
+					}
+				}
+           
+				if(counter > 0) {
+					average = (sum/counter);
+				}
+         
+				<constructor outputvariable="result">
+					<result>
+						<sum>{$sum}</sum>
+						<average>{$average}</average>
+						<count>{$counter}</count>
+        				<MapReduceKey>0</MapReduceKey>
+      				</result>
+				</constructor>
+      
+				result = "<Root>\n\t<key>" + key + "</key>\n\t<average>" + average + "</average>\n\t<count>" + counter + "</count>\n\t<sum>" + sum + "</sum>\n\t<max>" + max + "</max>\n\t<min>" + min + "</min>\n</Root>";
+      
+    		]]>
+
+  		</script>
+
+	</macro>
+
+</macros>

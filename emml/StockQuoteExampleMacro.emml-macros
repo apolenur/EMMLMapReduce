@@ -1,0 +1,24 @@
+<macros xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.openmashup.org/schemas/v1.0/EMML/../schemas/EMMLPrestoSpec.xsd"
+	xmlns="http://www.openmashup.org/schemas/v1.0/EMML" xmlns:presto="http://www.jackbe.com/v1.0/EMMLPrestoExtensions">
+
+	<macro name="StockQuoteExampleMacro" xmlns="http://www.openmashup.org/schemas/v1.0/EMML"
+		xmlns:presto="http://www.jackbe.com/v1.0/EMMLPrestoExtensions"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+		<output name="result" type="document" />
+		<input name="value" type="string" default="7/8/11 9:52:53 AM,GOOG,475.17" />
+		
+		<assign fromexpr="tokenize(xs:string($value),',')" outputvariable="quoteInfo" />
+		<constructor outputvariable="result">
+			<quote>
+				<symbol>{$quoteInfo[2]}</symbol>
+				<price>{$quoteInfo[3]}</price>
+				<datetime>{$quoteInfo[1]}</datetime>
+				<MapReduceKey>0</MapReduceKey>
+			</quote>
+		</constructor>
+
+	</macro>
+
+</macros>

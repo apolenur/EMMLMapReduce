@@ -1,0 +1,89 @@
+<macros 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.openmashup.org/schemas/v1.0/EMML/../schemas/EMMLPrestoSpec.xsd"
+	xmlns="http://www.openmashup.org/schemas/v1.0/EMML" 
+	xmlns:presto="http://www.jackbe.com/v1.0/EMMLPrestoExtensions">
+
+	<macro name="MapReduceAverageMacro" 
+		xmlns="http://www.openmashup.org/schemas/v1.0/EMML"
+		xmlns:presto="http://www.jackbe.com/v1.0/EMMLPrestoExtensions"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+		<output name="result" type="document" />
+		<input name="nodeName" type="string" default="price" />
+
+		<variable name="sum_" type="string"></variable>
+		<variable name="average_" type="string"></variable>
+		<variable name="max_" type="string"></variable>
+		<variable name="min_" type="string"></variable>
+		<variable name="key_" type="string"></variable>
+		<variable name="error_" type="string"></variable>
+
+		<script application="" inputvariables="" outputvariable="result" src="" type="groovy">
+   
+    		<![CDATA[
+      			import org.apache.hadoop.io.FloatWritable;
+      			import org.apache.hadoop.io.IntWritable;
+      			import org.apache.hadoop.io.Text;
+      			import org.apache.hadoop.mapreduce.Reducer;
+      			import groovy.util.XmlSlurper;
+     
+				int counter = -1;
+				double sum = 0.0f;
+				double average = 0.0f;
+				double max = 0.0f;
+				double min = Float.MAX_VALUE;
+				XmlSlurper parser = new XmlSlurper();
+				String key = "0";
+				String error = "Iterator contains no data";
+
+				Iterator<org.apache.hadoop.io.Text> iterator = com.jackbe.mapreduce.EMMLReducer.getIterator();
+      
+      			if(iterator != null) {
+      				counter = 0;
+					while( iterator.hasNext() ) {
+						String xml = ((org.apache.hadoop.io.Text)iterator.next()).toString();
+
+						if(xml != null) {
+							def record = parser.parseText(xml);
+							String rec = record.price[0].text();
+							double value = Float.parseFloat(rec);
+							sum += value; 
+							counter++;
+							key = record.MapReduceKey[0];
+						}
+					}
+           
+					if(counter > 0) {
+					error = "";
+						average = (sum/counter);
+					}					
+				}
+				else {
+					error = "ITERATOR IS NULL";
+     			}
+     			
+     			sum_ = Double.toString(sum);
+     			average_ = Double.toString(average);
+     			max_ = Double.toString(max);
+     			min_ = Double.toString(min);
+     			counter_ = Integer.toString(counter);
+     			error_ = error.toString();
+     			key_ = key.toString();
+    		]]>
+
+  		</script>
+  		
+		<constructor outputvariable="result">
+			<result>
+				<sum>{$sum_}</sum>
+				<average>{$average_}</average>
+				<count>{$counter_}</count>
+        		<MapReduceKey>{$key_}</MapReduceKey>
+        		<error>{$error_}</error>
+      		</result>
+		</constructor>
+		
+	</macro>
+
+</macros>

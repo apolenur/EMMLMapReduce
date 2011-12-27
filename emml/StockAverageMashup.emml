@@ -1,0 +1,21 @@
+<mashup name="StockAverageMashup"
+  xmlns="http://www.openmashup.org/schemas/v1.0/EMML"
+  xmlns:macro="http://www.openmashup.org/schemas/v1.0/EMMLMacro"
+  xmlns:presto="http://www.jackbe.com/v1.0/EMMLPrestoExtensions"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openmashup.org/schemas/v1.0/EMML/../schemas/EMMLPrestoSpec.xsd">
+  <operation name="Invoke">
+    <input name="value" type="string"/>
+    <output name="result" type="document"/>
+    <assign fromexpr="tokenize(xs:string($value),',')" outputvariable="quoteInfo"/>
+    <assign fromexpr="tokenize(xs:string($quoteInfo[1]),' ')" outputvariable="timedate"/>
+    <constructor outputvariable="result">
+      <quote>
+        <symbol>{$quoteInfo[2]}</symbol>
+        <price>{$quoteInfo[3]}</price>
+        <date>{$timedate[1]}</date>
+        <time>{$timedate[2]}</time>
+        <MapReduceKey>{$quoteInfo[2]}</MapReduceKey>
+      </quote>
+    </constructor>
+  </operation>
+</mashup>

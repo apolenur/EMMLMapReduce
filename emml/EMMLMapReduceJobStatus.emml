@@ -1,0 +1,17 @@
+<mashup xmlns="http://www.openmashup.org/schemas/v1.0/EMML" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns:macro="http://www.openmashup.org/schemas/v1.0/EMMLMacro" 
+xmlns:presto="http://www.jackbe.com/v1.0/EMMLPrestoExtensions" xsi:schemaLocation="http://www.openmashup.org/schemas/v1.0/EMML/../schemas/EMMLPrestoSpec.xsd" 
+name="EMMLMapReduceJobStatus">	
+	
+	<operation name="invoke">
+		<input name="jobID" type="string" default="1"/>
+		<output name="result" type="document"/>
+		
+		<script type="text/javascript" >
+			var mapreduce = Packages.com.jackbe.mapreduce.EMMLMapReduce.getInstance();
+			result = mapreduce.getAllJobs();
+		</script>
+		
+	</operation>
+</mashup>

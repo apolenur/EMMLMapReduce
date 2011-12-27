@@ -1,0 +1,9 @@
+<mashup name="StockQuoteMapper2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openmashup.org/schemas/v1.0/EMML ../schemas/EMMLPrestoSpec.xsd" xmlns="http://www.openmashup.org/schemas/v1.0/EMML" xmlns:macro="http://www.openmashup.org/schemas/v1.0/EMMLMacro" xmlns:presto="http://www.jackbe.com/v1.0/EMMLPrestoExtensions" >
+<operation name="runMashup" >
+
+<namespaces><namespace prefix="df"  uri="java:com.jackbe.jbp.jems.client.EMMLPrestoFunctions" /></namespaces>
+<variable name="limitRecords" type="number" default="-2"/>
+
+
+</operation>
+</mashup>

@@ -1,0 +1,22 @@
+<mashup name="StockAverageReducer"
+  xmlns="http://www.openmashup.org/schemas/v1.0/EMML"
+  xmlns:macro="http://www.openmashup.org/schemas/v1.0/EMMLMacro"
+  xmlns:presto="http://www.jackbe.com/v1.0/EMMLPrestoExtensions"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openmashup.org/schemas/v1.0/EMML/../schemas/EMMLPrestoSpec.xsd">
+  <operation name="Invoke">
+    <output name="result" type="document"/>
+    <input name="symbol" type="string"/>
+    <input name="date" type="string"/>
+    <input name="price" type="string"/>
+    <input name="time" type="string"/>
+    <constructor outputvariable="result">
+      <quote>
+        <symbol>{$symbol}</symbol>
+        <price>{$price}</price>
+        <date>{$date}</date>
+        <time>{$time}</time>
+        <MapReduceKey>{$symbol}{$date}</MapReduceKey>
+      </quote>
+    </constructor>
+  </operation>
+</mashup>

@@ -1,0 +1,42 @@
+<mashup name="TreasuryMSATitleUpdater" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openmashup.org/schemas/v1.0/EMML ../schemas/EMMLPrestoSpec.xsd" xmlns="http://www.openmashup.org/schemas/v1.0/EMML" xmlns:macro="http://www.openmashup.org/schemas/v1.0/EMMLMacro" xmlns:presto="http://www.jackbe.com/v1.0/EMMLPrestoExtensions" >
+<operation name="runMashup" >
+
+<namespaces><namespace prefix="df"  uri="java:com.jackbe.jbp.jems.client.EMMLPrestoFunctions" /></namespaces>
+<variable name="limitRecords" type="number" default="-2"/>
+<presto:presto-meta wires_id="" name="prestoMeta_createdBy"  >Wires</presto:presto-meta>
+<presto:presto-meta wires_id="" name="prestoMeta_state"  ><![CDATA[{}]]></presto:presto-meta>
+<presto:presto-meta wires_id="" name="prestoMeta_customProperties"  ><![CDATA[{"invoke_1":{"serviceName":"MSACodes","label":"MSACodes.getData"},"DataDecorator_2":{"label":"Data Decorator","decorations":{"/*:DataTable/*:Entry/*:_CBSA_Title":{"fnsMap":[{"fnType":"string","fnName":"replace","argValues":{"Replace String in":{"value":"/*:DataTable/*:Entry/*:_CBSA_Title","type":"PATH","emmlPath":"$curEl1/*:_CBSA_Title"},"Look for string":{"value":" (Micro Area)","type":"LITERAL","emmlPath":" (Micro Area)"},"Replace with":""},"selectedFn":2,"applyOrder":2,"occuranceNum":1,"fnNamespaces":{"df":"java:com.jackbe.jbp.jems.client.EMMLPrestoFunctions"}},{"fnType":"string","fnName":"replace","argValues":{"Replace String in":{"value":"/*:DataTable/*:Entry/*:_CBSA_Title","type":"PATH","emmlPath":"replace($curEl1/*:_CBSA_Title,df:escRegEx(\" (Micro Area)\"),\"\")"},"Look for string":{"value":"(Metro Area)","type":"LITERAL","emmlPath":"(Metro Area)"},"Replace with":""},"selectedFn":2,"applyOrder":2,"occuranceNum":2,"fnNamespaces":{"df":"java:com.jackbe.jbp.jems.client.EMMLPrestoFunctions"}}],"arrayParentPath":"/*:DataTable/*:Entry","selectedFns":[2,2],"path":"/*:DataTable/*:Entry/*:_CBSA_Title"}}},"foreach_4":{"inputInfo":{"inputVar":"DataDecorator_2_out","path":"/*:DataTable/*:Entry"},"resultType":"Append","resultName":"result","service":"TreasuryMSATitleUpdateStatement","operation":"runMashup","serviceName":"TreasuryMSATitleUpdateStatement"}}]]></presto:presto-meta>
+<presto:presto-meta wires_id="" name="prestoMeta_sequenceNumber"  >5</presto:presto-meta>
+<presto:presto-meta wires_id="" name="prestoMeta_WiresGraphXML"  ><![CDATA[<mxGraphModel><root><MashupService label="Mashup Service" name="untitled" description="" id="0"><mxCell/></MashupService><Layer label="Default Layer" id="1"><mxCell parent="0"/></Layer><mxCell id="output_0" style="output" parent="1" vertex="true" connectable="0" label="" name="MashupOutput" description="Output of the Mashup"><mxGeometry x="680" y="120" width="40" height="40" as="geometry"><mxRectangle width="48" height="48" as="alternateBounds"/></mxGeometry></mxCell><mxCell id="inport_2" value="" style="port;image=images/wires/inport.png;align=right;imageAlign=right;spacingRight=18px;" parent="output_0" vertex="1" isPort="1" isInport="1"><mxGeometry x="0.01" y="0.4" width="16" height="16" relative="1" as="geometry"><mxPoint x="-6" y="-8" as="offset"/></mxGeometry></mxCell><mxCell id="invoke_1" style="ConditionalInvoke" parent="1" vertex="true" connectable="0" label="" name="Operation" description="Service Operation"><mxGeometry x="190" y="120" width="40" height="40" as="geometry"><mxRectangle width="48" height="48" as="alternateBounds"/></mxGeometry></mxCell><mxCell id="outport_3" value="" style="port;image=images/wires/outport.png;" parent="invoke_1" vertex="1" isPort="1" isInport="0"><mxGeometry x="0.92" y="0.4" width="16" height="16" relative="1" as="geometry"><mxPoint x="-8" y="-8" as="offset"/></mxGeometry></mxCell><mxCell id="DataDecorator_2" style="DataDecorator" parent="1" vertex="true" connectable="0" label="" name="Operation" description="Service Operation"><mxGeometry x="370" y="120" width="40" height="40" as="geometry"><mxRectangle width="48" height="48" as="alternateBounds"/></mxGeometry></mxCell><mxCell id="inport_4" value="" style="port;image=images/wires/inport.png;align=right;imageAlign=right;spacingRight=18px;" parent="DataDecorator_2" vertex="1" isPort="1" isInport="1"><mxGeometry x="0.01" y="0.4" width="16" height="16" relative="1" as="geometry"><mxPoint x="-6" y="-8" as="offset"/></mxGeometry></mxCell><mxCell id="outport_5" value="" style="port;image=images/wires/outport.png;" parent="DataDecorator_2" vertex="1" isPort="1" isInport="0"><mxGeometry x="0.92" y="0.4" width="16" height="16" relative="1" as="geometry"><mxPoint x="-8" y="-8" as="offset"/></mxGeometry></mxCell><mxCell id="6" value="" parent="1" source="outport_3" target="inport_4" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="foreach_4" style="foreach" parent="1" vertex="true" connectable="0" label="" name="Operation" description="Service Operation"><mxGeometry x="510" y="120" width="40" height="40" as="geometry"><mxRectangle width="48" height="48" as="alternateBounds"/></mxGeometry></mxCell><mxCell id="inport_7" value="" style="port;image=images/wires/inport.png;align=right;imageAlign=right;spacingRight=18px;" parent="foreach_4" vertex="1" isPort="1" isInport="1"><mxGeometry x="0.01" y="0.4" width="16" height="16" relative="1" as="geometry"><mxPoint x="-6" y="-8" as="offset"/></mxGeometry></mxCell><mxCell id="outport_8" value="" style="port;image=images/wires/outport.png;" parent="foreach_4" vertex="1" isPort="1" isInport="0"><mxGeometry x="0.92" y="0.4" width="16" height="16" relative="1" as="geometry"><mxPoint x="-8" y="-8" as="offset"/></mxGeometry></mxCell><mxCell id="9" value="" parent="1" source="outport_5" target="inport_7" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell><mxCell id="10" value="" parent="1" source="outport_8" target="inport_2" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell></root></mxGraphModel>]]></presto:presto-meta>
+
+<output output-encoding="UTF-8"  wires_id="output_0" name="output_0" type="document" service="TreasuryMSATitleUpdateStatement"/>
+<variable name="invoke_1_out" type="Document" default="" />
+
+<invoke   wires_id="invoke_1" name="invoke_1" header="" service="MSACodes" operation="getData" serviceVersion="" outputvariable="invoke_1_out" inputvariables="" />
+<variable name="DataDecorator_2_out" type="document" default="" />
+
+<sequence wires_id='DataDecorator_2' wires_type='DataDecorator'>
+<filter filterexpr='$invoke_1_out' inputvariable='invoke_1_out' outputvariable='invoke_1_out_dec' />
+<foreach variable="curEl1" items="$invoke_1_out_dec/*:DataTable/*:Entry">
+<assign fromexpr='replace(replace($curEl1/*:_CBSA_Title,df:escRegEx(" (Micro Area)"),""),df:escRegEx("(Metro Area)"),"")' toexpr='$curEl1/*:_CBSA_Title' mode='replace' />
+</foreach>
+<assign fromvariable='invoke_1_out_dec' outputvariable='DataDecorator_2_out' wires_id='DataDecorator_2' name='DataDecorator_2'/>
+</sequence>
+
+
+
+
+<variable type="document" name="output_0_dummy"><result/></variable><assign wires_id="foreach_4" wires_type="support_tag" outputvariable="output_0" fromvariable="output_0_dummy"/>
+<foreach variable="Entry" items="$DataDecorator_2_out/*:DataTable/*:Entry" wires_id="foreach_4" name="foreach_4" outputvariable="output_0">
+
+<variable name="inputparam_1_6" type="string" default="{$Entry/*:_CBSA_Title/text()}" /><assign  fromexpr="$Entry/*:_CBSA_Title/text()" outputvariable="inputparam_1_6" />
+<variable name="inputparam_2_7" type="string" default="{$Entry/*:CBSA/text()}" /><assign  fromexpr="$Entry/*:CBSA/text()" outputvariable="inputparam_2_7" />
+<invoke   wires_id="foreach_4" name="foreach_4" header="" service="TreasuryMSATitleUpdateStatement" operation="runMashup" serviceVersion="" outputvariable="output_0_invoke" inputvariables="inputparam_1_6,inputparam_2_7" />
+<appendresult outputvariable="$output_0">
+$output_0_invoke
+</appendresult>
+</foreach>
+
+
+</operation>
+</mashup>

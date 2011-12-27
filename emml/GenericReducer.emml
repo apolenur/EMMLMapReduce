@@ -1,0 +1,11 @@
+<mashup name="GenericReducer"
+  xmlns="http://www.openmashup.org/schemas/v1.0/EMML"
+  xmlns:macro="http://www.openmashup.org/schemas/v1.0/EMMLMacro"
+  xmlns:presto="http://www.jackbe.com/v1.0/EMMLPrestoExtensions"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openmashup.org/schemas/v1.0/EMML/../schemas/EMMLPrestoSpec.xsd">
+  <operation name="Invoke">
+    <output name="result" type="string"/>
+    <input default="ERROR: NO INPUT" name="value" type="string"/>
+    <assign fromvariable="value" outputvariable="result" type="string"/>
+  </operation>
+</mashup>

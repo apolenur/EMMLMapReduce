@@ -1,0 +1,32 @@
+<mashup xmlns="http://www.openmashup.org/schemas/v1.0/EMML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:macro="http://www.openmashup.org/schemas/v1.0/EMMLMacro" xmlns:presto="http://www.jackbe.com/v1.0/EMMLPrestoExtensions" xsi:schemaLocation="http://www.openmashup.org/schemas/v1.0/EMML/../schemas/EMMLPrestoSpec.xsd" name="EMMLMapReduceJobRunner">	
+	<operation name="invoke"> 
+		<output name="result"			 type="document"/> 
+		<input name="mapperScript"	type="string" default="NavteqMapperEMML"/>
+		<input name="reducerScript" type="string" default="GenericReducer"/>
+		<input name="inputDir"			type="string" default="dbinput" />
+		<input name="outputDir"		 type="string" default="output" />
+		
+		<variable name="jobState" type="string" default="NOT STARTED"/>	
+		<variable name="jobId" type="string" default="NaN"/>	
+		<variable name="jobProgress" type="float" default="0.0"/>	
+
+			<invoke service='JEMSDesigner' serviceversion='' operation='getClientScript' inputvariables='mapperScript' outputvariable='mapperEMML' />
+				
+			<invoke service='JEMSDesigner' serviceversion='' operation='getClientScript' inputvariables='reducerScript' outputvariable='reducerEMML' />
+		
+		<script type="text/groovy">
+			var mapreduce = Packages.com.jackbe.mapreduce.EMMLMapReduce.getInstance();
+			
+			var job = mapreduce.start(inputDir, outputDir, mapperEMML, reducerEMML); 
+			jobState = mapreduce.getJobState(job);
+			jobId = job.getJobID();
+		 
+		</script>	
+		<constructor outputvariable="result"> 
+			<job> 
+				<id>{$jobId}</id>
+				<state>{$jobState}</state>	
+			</job> 
+		</constructor> 
+	</operation> 
+</mashup>
