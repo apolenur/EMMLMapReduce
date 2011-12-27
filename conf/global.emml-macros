@@ -1,0 +1,203 @@
+<?xml version="1.0"?>
+
+<macros xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.openmashup.org/schemas/v1.0/EMML/../schemas/EMMLPrestoSpec.xsd"
+	xmlns="http://www.openmashup.org/schemas/v1.0/EMML" xmlns:presto="http://www.jackbe.com/v1.0/EMMLPrestoExtensions"
+	xmlns:macro="http://www.openmashup.org/schemas/v1.0/EMMLMacro"
+	xmlns:fn="java:org.oma.emml.utils.EMMLFunctions" domain="global">
+
+	<macro name="StockQuoteExample">
+
+  		<output name="result" type="document"/>
+  		<input default="7/8/11 9:52:53 AM,GOOG,475.17" name="value" type="string"/>
+        
+  		<assign fromexpr="tokenize(xs:string($value),',')" outputvariable="quoteInfo"/>
+      
+  		<constructor outputvariable="result">
+      		<quote>
+        		<symbol>{$quoteInfo[2]}</symbol>
+        		<price>{$quoteInfo[3]}</price>
+        		<datetime>{$quoteInfo[1]}</datetime>
+        		<MapReduceKey>0</MapReduceKey>
+    		</quote>
+  		</constructor>
+	</macro>​
+
+	<macro name="HAMPModParser" xmlns="http://www.openmashup.org/schemas/v1.0/EMML" xmlns:presto="http://www.jackbe.com/v1.0/EMMLPrestoExtensions" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  
+  		<output name="result" type="document"/>
+  
+  		<input default="2243,2,Active Payment,23,Official Modification,6,Official Correction,GSE,HMP7,HMP Current,2009-05-01,2009-05-04,1457,,,,325,360,,,65,79,,,,,2009-08-19,,,,,,,,,2006,2704.54,,504.43,504.43,2123.34,Y,2009-09-01,,30.823,44.757,6,Curtailment of income,,400,2,7,2009-08-12,2009-08-01,2009-04-01,4,4,Conventional w/o PMI,2036,2036,5.25,2009-09-01,1614,1448.7,2103.57\,,,944.27,952.57,1281.57,1600,600,,3,Step Rate,2,Fixed rate,,2,Good,39540,1,2,Borrower Occupied,1,East North Central,,,1,Principal Residence,2009-05-04,5,Automated Valuation Model AVM - GSE,324,[1|3|1044.14|2014-09-01|12][2|4|1145.6|2015-09-01|12][3|5|1248|2016-09-01|12][4|5.25|1273.28|2017-09-01|229],324,,,,,4,2009-08-04,1457," name="value" type="string" />
+  
+  		<assign fromexpr="tokenize(xs:string($value),',')" outputvariable="ModInfo"/>
+  
+  		<constructor outputvariable="result">
+    		<Mod>
+      			<fnclastid>{$ModInfo[1]}</fnclastid>
+      			<statusCode>{$ModInfo[2]}</statusCode> 
+      			<msaCode>{$ModInfo[81]}</msaCode> 
+      			<regionName>{$ModInfo[86]}</regionName>
+      			<MapReduceKey>0</MapReduceKey>
+    		</Mod>
+  		</constructor>
+  
+	</macro>​
+	
+  <macro name="MapReduceAverage" xmlns="http://www.openmashup.org/schemas/v1.0/EMML" xmlns:fn="java:org.oma.emml.utils.EMMLFunctions" xmlns:macro="http://www.openmashup.org/schemas/v1.0/EMMLMacro" xmlns:presto="http://www.jackbe.com/v1.0/EMMLPrestoExtensions" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <output name="result" type="document"/>
+
+  <presto:macro-meta>
+      <block> 
+        <label>MapReduce Average</label>
+        <help>MapReduce Average Macro</help>
+        <icon url="/prestohub/images/wires/sidebar/actions/sort.png" usage="menu"/>
+        <icon url="/prestohub/extensions/blocks/Hadoop/images/hadoop-grey.png" usage="canvas"/>
+    </block>     
+  </presto:macro-meta>  
+                                         
+  <input name="myDoc" type="document"/>
+    
+  <presto:presto-meta name="type" reference="myDoc" variable="XPathToMean">datapath</presto:presto-meta>
+  <presto:presto-meta name="type" reference="myDoc" variable="XPathToSum">datapath</presto:presto-meta>
+  <presto:presto-meta name="type" reference="myDoc" variable="XPathToMax">datapath</presto:presto-meta>
+  <presto:presto-meta name="type" reference="myDoc" variable="XPathToMin">datapath</presto:presto-meta>
+
+  <input name="XPathToMean" required="true" type="string"/>
+  <input name="XPathToSum" required="true" type="string"/>
+  <input name="XPathToMax" required="true" type="string"/>
+  <input name="XPathToMin" required="true" type="string"/>
+          
+  <variable name="key_" type="string"/>
+  <variable name="error_" type="string"/>
+  <variable name="sum_" type="string"/>
+  <variable name="mean_" type="string"/>
+  <variable name="max_" type="string"/>
+  <variable name="min_" type="string"/>
+  <variable name="counter_" type="string"/>
+                
+  <script application="" inputvariables="XPathToMean,XPathToSum,XPathToMin,XPathToMax" outputvariable="result" src="" type="groovy">
+      
+    <![CDATA[
+      import org.apache.hadoop.io.FloatWritable;
+      import org.apache.hadoop.io.IntWritable;
+      import org.apache.hadoop.io.Text;
+      import org.apache.hadoop.mapreduce.Reducer;
+      import groovy.util.XmlSlurper;
+                                        
+      int counter = -1;
+      double sum = 0.0;
+      double mean = 0.0;
+      double meanTotal = 0.0;
+      double max = 0.0;
+      double min = Double.MAX_VALUE;
+                                          
+      XmlSlurper parser = new XmlSlurper();
+            
+      String key = "0";
+      String error = "Iterator contains no data";
+      String rec = "";
+                        
+      //String test = "<quote> <symbol>INTC</symbol> <price>23.06</price> <date>7/7/11</date> <time>7/7/11</time> <MapReduceKey>INTC7/7/11</MapReduceKey> </quote>";
+            //String xp = "price";        
+
+      
+      Iterator<org.apache.hadoop.io.Text> iterator = com.jackbe.mapreduce.EMMLReducer.getIterator();
+            
+      if(iterator != null) {
+         counter = 0;
+                     
+         while( iterator.hasNext() ) {
+            String xml = ((org.apache.hadoop.io.Text)iterator.next()).toString();
+            //String xml = test;
+            if(xml != null) {
+               def record = parser.parseText(xml);
+               if(record != null) {
+                  String strippedSumPath = XPathToSum.substring(XPathToSum.lastIndexOf(":"));
+                  String sumVal = record."$strippedSumPath"[0].text();
+                  if(sumVal != null && sumVal != "") {
+                     sum += Double.parseDouble(sumVal);
+                  }
+                  else {
+                     error = "XPath to sum node not found or empty. XPath: $strippedSumPath";
+                     break;
+                  }
+                  String strippedMeanPath = XPathToMean.substring(XPathToMean.lastIndexOf(":"));
+                  String meanVal = record."$strippedMeanPath"[0].text();
+                  if(meanVal != null && meanVal != "") {
+                      meanTotal += Double.parseDouble(meanVal);
+                  }
+                  else {
+                    error = "XPath to Mean node not found or empty. XPath: $strippedMeanPath";
+                    break;
+                  }
+                  String strippedMinPath = XPathToMin.substring(XPathToMin.lastIndexOf(":"));
+                  String minVal = record."$strippedMinPath"[0].text();
+                  if(minVal != null && minVal != "") {
+                    double value = Double.parseDouble(minVal);
+                    if( value < min) {
+                      min = value;
+                    }
+                  }
+                  else {
+                    error = "XPath to Min node not found or empty. XPath: $strippedMinPath";
+                    break;
+                  }
+                  String strippedMaxPath = XPathToMax.substring(XPathToMax.lastIndexOf(":"));
+                  String maxVal = record."$strippedMaxPath"[0].text();
+                  if(maxVal != null && maxVal != "") {
+                    double value = Double.parseDouble(maxVal);
+                    if( value > max) {
+                      max = value;
+                    }
+                  }
+                  else {
+                    error = "XPath to Max node not found or empty. XPath: $strippedMaxPath";
+                    break;
+                  }
+                } // if record
+                counter++;
+                key = record.MapReduceKey[0];
+            } // if xml != null
+            else {
+            error = "XML is null";
+         }  
+       } // while
+           
+     } //if iterator != null
+           
+     if(counter > 0) {
+        error = "none";
+        mean = (meanTotal/counter);
+     }          
+     if(counter == -1) {
+         error = "ITERATOR IS NULL";
+     }
+       
+    sum_ = Double.toString(sum);
+    mean_ = Double.toString(mean);
+    max_ = Double.toString(max);
+    min_ = Double.toString(min);
+    counter_ = Integer.toString(counter);
+    error_ = error.toString();
+    key_ = key.toString();
+    //key_ = "$XPathToSum";
+    ]]>
+                                               
+  </script>
+    
+   <constructor outputvariable="result">
+      <result>
+        <sum>{$sum_}</sum>
+        <mean>{$mean_}</mean>
+        <min>{$min_}</min>
+        <max>{$max_}</max>
+        <count>{$counter_}</count>
+        <MapReduceKey>{$key_}</MapReduceKey>
+        <error>{$error_}</error>
+     </result>
+  </constructor>
+
+</macro>​
+
+</macros>

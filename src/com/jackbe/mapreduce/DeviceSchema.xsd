@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/DeviceSchema" xmlns:tns="http://www.example.org/DeviceSchema" elementFormDefault="qualified">
+
+    <complexType name="DeviceType">
+    	<sequence>
+    		<element name="ID" type="string"></element>
+    		<element name="Hostname" type="string"></element>
+    		<element name="HW_Address" type="string"></element>
+    		<element name="SN" type="string"></element>
+    		<element name="NewElement" type="string"></element>
+    		<element name="NewElement1" type="string"></element>
+    	</sequence>
+    </complexType>
+</schema>
